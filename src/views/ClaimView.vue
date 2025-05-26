@@ -8,7 +8,7 @@
     <div class="container">
       <div class="row align-items-center justify-content-center">
         <div class="col-lg-10">
-          <WithdrawalWidget
+          <ClaimWidget
             :xap-coin="xapCoin"
             :eth-coin="ethCoin"
             :network-color="networkColor"
@@ -22,9 +22,9 @@
             :is-loading="isLoading"
             :eth-balance="ethBalance"
             :xap-balance="xapBalance"
-            :withdrawableXAP="withdrawableXAP"
-            :can-withdraw="canWithdraw"
-            :is-withdrawing="isWithdrawing"
+            :withdrawableXAP="claimableXAP"
+            :can-withdraw="canClaim"
+            :is-withdrawing="isClaiming"
             :transaction-hash="transactionHash"
             :error-message="errorMessage"
             :shorten-address="shortenAddress"
@@ -33,7 +33,7 @@
             @connect-wallet="connectWallet"
             @copy-address="copyAddress"
             @switch-network="switchNetwork"
-            @withdraw-tokens="withdrawTokens"
+            @withdraw-tokens="claimTokens"
           />
         </div>
       </div>
@@ -55,14 +55,14 @@ import heroBackground from "../assets/images/hero.png";
 
 import AppNavbar from "../components/AppNavbar.vue";
 import AppFooter from "../components/AppFooter.vue";
-import WithdrawalWidget from "../components/WithdrawalWidget.vue";
+import ClaimWidget from "../components/ClaimWidget.vue";
 
 export default {
-  name: "WithdrawView",
+  name: "ClaimView",
   components: {
     AppNavbar,
     AppFooter,
-    WithdrawalWidget,
+    ClaimWidget,
   },
   data() {
     return {
@@ -87,12 +87,12 @@ export default {
       // Balance states
       ethBalance: "0",
       xapBalance: "0",
-      withdrawableXAP: "0",
+      claimableXAP: "0",
       isLoading: false,
 
-      // Withdraw states
-      canWithdraw: false,
-      isWithdrawing: false,
+      // Claim states
+      canClaim: false,
+      isClaiming: false,
       transactionHash: "",
       errorMessage: "",
 
@@ -101,7 +101,7 @@ export default {
         development: {
           // Sepolia testnet
           chainId: "0xaa36a7",
-          withdrawalContract: "0xf16afC94cDadCb9b802fDf3D021d591D901ae3aC",
+          withdrawalContract: "0x3185141a79094C751b9f313D4e9B75e6ECa3D914",
           xapTokenContract: "0xE3FAD904f18CCb463a426d02c3dF73B72f158372",
           explorerUrl: "https://sepolia.etherscan.io",
         },
@@ -346,8 +346,8 @@ export default {
     resetBalances() {
       this.ethBalance = "0";
       this.xapBalance = "0";
-      this.withdrawableXAP = "0";
-      this.canWithdraw = false;
+      this.claimableXAP = "0";
+      this.canClaim = false;
     },
 
     // Load user balances
@@ -370,14 +370,11 @@ export default {
           this.xapBalance = ethers.utils.formatUnits(xapBalanceWei, 8);
         }
 
-        // Get withdrawable XAP balance - implement withdrawableBalance
+        // Get claimable XAP balance - implement withdrawableBalance
         if (this.withdrawalContract) {
-          const withdrawableBalanceWei = await this.withdrawableBalance();
-          this.withdrawableXAP = ethers.utils.formatUnits(
-            withdrawableBalanceWei,
-            8
-          );
-          this.canWithdraw = withdrawableBalanceWei.gt(0);
+          const claimableBalanceWei = await this.withdrawableBalance();
+          this.claimableXAP = ethers.utils.formatUnits(claimableBalanceWei, 8);
+          this.canClaim = claimableBalanceWei.gt(0);
         }
       } catch (error) {
         console.error("Error loading balances:", error);
@@ -401,37 +398,37 @@ export default {
         );
         return balance;
       } catch (error) {
-        console.error("Error getting withdrawable balance:", error);
+        console.error("Error getting claimable balance:", error);
         throw error;
       }
     },
 
-    // Implement withdraw function to withdraw tokens
-    async withdrawTokens() {
+    // Implement withdraw function to claim tokens
+    async claimTokens() {
       if (!this.isConnected || !this.isCorrectNetwork) {
         this.errorMessage =
           "Please connect your wallet and make sure you are on the correct network.";
         return;
       }
 
-      if (!this.canWithdraw) {
-        this.errorMessage = "You have no tokens available to withdraw.";
+      if (!this.canClaim) {
+        this.errorMessage = "You have no tokens available to claim.";
         return;
       }
 
-      this.isWithdrawing = true;
+      this.isClaiming = true;
       this.errorMessage = "";
       this.transactionHash = "";
 
       try {
-        // Convert withdrawable amount to Wei using 8 decimals
-        const amountToWithdraw = ethers.utils.parseUnits(
-          this.withdrawableXAP.toString(),
+        // Convert claimable amount to Wei using 8 decimals
+        const amountToClaim = ethers.utils.parseUnits(
+          this.claimableXAP.toString(),
           8
         );
 
         // Call the withdraw function from the contract
-        const tx = await this.withdrawalContract.withdraw(amountToWithdraw);
+        const tx = await this.withdrawalContract.withdraw(amountToClaim);
 
         // Wait for transaction to be mined
         const receipt = await tx.wait();
@@ -439,22 +436,22 @@ export default {
         // Store transaction hash for UI
         this.transactionHash = receipt.transactionHash;
 
-        // Reload balances after successful withdrawal
+        // Reload balances after successful claim
         await this.loadBalances();
       } catch (error) {
-        console.error("Error withdrawing tokens:", error);
+        console.error("Error claiming tokens:", error);
 
         // Handle specific error cases
         if (error.code === 4001) {
           this.errorMessage = "Transaction was rejected by the user.";
         } else if (error.data && error.data.message) {
-          this.errorMessage = "Withdrawal failed: " + error.data.message;
+          this.errorMessage = "Claim failed: " + error.data.message;
         } else {
           this.errorMessage =
-            "Withdrawal failed: " + (error.message || "Unknown error");
+            "Claim failed: " + (error.message || "Unknown error");
         }
       } finally {
-        this.isWithdrawing = false;
+        this.isClaiming = false;
       }
     },
 

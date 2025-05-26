@@ -1,15 +1,15 @@
 <template>
-  <div class="withdrawal-card">
-    <div class="withdrawal-card-inner">
+  <div class="claim-card">
+    <div class="claim-card-inner">
       <!-- Card Header -->
       <div class="header-section text-center">
         <div class="d-flex align-items-center justify-content-center mb-3">
           <img :src="xapCoin" class="header-logo me-3" alt="XAP Token" />
-          <h1 class="mb-0">Withdraw your $XAP tokens</h1>
+          <h1 class="mb-0">Claim your $XAP tokens</h1>
         </div>
         <p class="text-muted mb-4">
-          Welcome to the official $XAP withdrawal page. Connect your wallet to
-          withdraw your available tokens.
+          Welcome to the official $XAP claim page. Connect your wallet to claim
+          your available tokens.
         </p>
 
         <!-- Network Badge -->
@@ -32,7 +32,7 @@
           </div>
           <h3 class="mb-3">Connect Your Wallet</h3>
           <p class="text-muted mb-4">
-            Connect your wallet to check your $XAP token balance and withdraw
+            Connect your wallet to check your $XAP token balance and claim
             available tokens.
           </p>
           <button
@@ -102,7 +102,7 @@
                     <div class="balance-icon me-2">
                       <img :src="ethCoin" alt="ETH" width="24" height="24" />
                     </div>
-                    <h4 class="mb-0">ETH Balance</h4>
+                    <h5 class="mb-0">ETH Balance</h5>
                   </div>
                   <div class="balance-amount">
                     <div v-if="isLoading">
@@ -130,7 +130,7 @@
                         style="border-radius: 50%"
                       />
                     </div>
-                    <h4 class="mb-0">XAP Balance</h4>
+                    <h5 class="mb-0">XAP Balance</h5>
                   </div>
                   <div class="balance-amount">
                     <div v-if="isLoading">
@@ -144,9 +144,9 @@
               </div>
             </div>
 
-            <!-- Withdrawable XAP -->
+            <!-- Claimable XAP -->
             <div class="col-md-4">
-              <div class="balance-card withdrawable h-100">
+              <div class="balance-card claimable h-100">
                 <div class="card-body">
                   <div class="d-flex align-items-center mb-3">
                     <div class="balance-icon me-2">
@@ -158,7 +158,7 @@
                         style="border-radius: 50%"
                       />
                     </div>
-                    <h4 class="mb-0">Withdrawable XAP</h4>
+                    <h5 class="mb-0">Claimable XAP</h5>
                   </div>
                   <div class="balance-amount">
                     <div v-if="isLoading">
@@ -174,28 +174,28 @@
           </div>
         </div>
 
-        <!-- Withdrawal Action -->
-        <div class="withdrawal-action mt-5">
+        <!-- Claim Action -->
+        <div class="claim-action mt-5">
           <div class="row align-items-center">
             <div class="col-md-7">
-              <div class="withdraw-info">
-                <h4 class="mb-2">Ready to withdraw your tokens?</h4>
+              <div class="claim-info">
+                <h4 class="mb-2">Ready to claim your tokens?</h4>
                 <p class="text-muted mb-0">
-                  Click the button to withdraw
+                  Click the button to claim
                   {{ formatBalance(withdrawableXAP) }} XAP tokens to your
                   wallet.
                   <span
                     v-if="!canWithdraw && withdrawableXAP === '0'"
                     class="text-danger"
                   >
-                    You don't have any tokens available to withdraw.
+                    You don't have any tokens available to claim.
                   </span>
                 </p>
               </div>
             </div>
             <div class="col-md-5 text-md-end text-center mt-3 mt-md-0">
               <button
-                class="btn btn-primary btn-lg py-3 px-5 rounded-pill shadow withdraw-btn"
+                class="btn btn-primary btn-lg py-3 px-5 rounded-pill shadow claim-btn"
                 @click="$emit('withdraw-tokens')"
                 :disabled="!canWithdraw || isWithdrawing"
               >
@@ -205,7 +205,7 @@
                   role="status"
                   aria-hidden="true"
                 ></span>
-                {{ isWithdrawing ? "Processing..." : "Withdraw Tokens" }}
+                {{ isWithdrawing ? "Processing..." : "Claim Tokens" }}
               </button>
             </div>
           </div>
@@ -219,7 +219,7 @@
               <div>
                 <h5 class="mb-1">Transaction successful!</h5>
                 <p class="mb-2">
-                  Your tokens have been successfully withdrawn to your wallet.
+                  Your tokens have been successfully claimed to your wallet.
                 </p>
                 <a
                   :href="getExplorerUrl(transactionHash)"
@@ -253,7 +253,7 @@
 
 <script>
 export default {
-  name: "WithdrawalWidget",
+  name: "ClaimWidget",
   props: {
     xapCoin: String,
     ethCoin: String,
@@ -288,8 +288,8 @@ export default {
 </script>
 
 <style scoped>
-/* Styles specific to WithdrawalWidget, extracted from ClaimView.vue */
-.withdrawal-card {
+/* Styles specific to ClaimWidget, extracted from ClaimView.vue */
+.claim-card {
   background: rgba(21, 21, 21, 0.7);
   backdrop-filter: blur(10px);
   border-radius: 24px;
@@ -301,7 +301,7 @@ export default {
   transform: translateZ(0);
 }
 
-.withdrawal-card-inner {
+.claim-card-inner {
   padding: 3rem;
   position: relative;
   z-index: 2;
@@ -434,7 +434,7 @@ export default {
   font-weight: 500;
 }
 
-.balance-card.withdrawable {
+.balance-card.claimable {
   position: relative;
   --border-angle: 0turn;
   background: linear-gradient(
@@ -474,8 +474,8 @@ export default {
   -webkit-text-fill-color: transparent;
 }
 
-/* Withdrawal Action Section */
-.withdrawal-action {
+/* Claim Action Section */
+.claim-action {
   background: rgba(26, 32, 44, 0.5);
   border-radius: 16px;
   padding: 2rem;
@@ -483,16 +483,16 @@ export default {
   color: #ffffff;
 }
 
-.withdrawal-action h4 {
+.claim-action h4 {
   color: #ffffff;
   font-weight: 600;
 }
 
-.withdraw-info p {
+.claim-info p {
   color: rgba(255, 255, 255, 0.7);
 }
 
-.withdraw-btn {
+.claim-btn {
   position: relative;
   overflow: hidden;
   background: linear-gradient(90deg, #4c6fff, #6e8cff);
@@ -502,12 +502,12 @@ export default {
   color: #ffffff;
 }
 
-.withdraw-btn:hover:not(:disabled) {
+.claim-btn:hover:not(:disabled) {
   transform: translateY(-3px);
   box-shadow: 0 15px 20px -3px rgba(76, 111, 255, 0.4);
 }
 
-.withdraw-btn:disabled {
+.claim-btn:disabled {
   background: linear-gradient(90deg, #718096, #a0aec0);
   cursor: not-allowed;
   opacity: 0.7;
@@ -550,7 +550,7 @@ export default {
 
 /* Responsive Adjustments (can be fine-tuned if necessary) */
 @media (max-width: 992px) {
-  .withdrawal-card-inner {
+  .claim-card-inner {
     padding: 2rem;
   }
 
@@ -560,11 +560,11 @@ export default {
 }
 
 @media (max-width: 768px) {
-  .withdrawal-card-inner {
+  .claim-card-inner {
     padding: 1.5rem;
   }
 
-  .withdrawal-action {
+  .claim-action {
     padding: 1.5rem;
   }
 
@@ -586,7 +586,7 @@ export default {
     font-size: 0.8rem;
   }
 
-  .withdraw-btn {
+  .claim-btn {
     width: 100%;
   }
 }
