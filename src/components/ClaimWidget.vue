@@ -15,10 +15,6 @@
         <!-- Network Badge -->
         <div class="network-badge mb-4">
           <span :class="['badge rounded-pill', networkColor]">
-            <i
-              class="bi bi-circle-fill me-1"
-              :class="isConnected ? 'text-success' : 'text-warning'"
-            ></i>
             {{ networkName }}
           </span>
         </div>

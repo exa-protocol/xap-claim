@@ -10,6 +10,15 @@
     "stateMutability": "nonpayable",
     "type": "constructor"
   },
+  { "inputs": [], "name": "AllowanceOverflow", "type": "error" },
+  { "inputs": [], "name": "ArrayLengthMismatch", "type": "error" },
+  { "inputs": [], "name": "BatchSizeExceeded", "type": "error" },
+  { "inputs": [], "name": "ETHTransferFailed", "type": "error" },
+  { "inputs": [], "name": "EmptyArray", "type": "error" },
+  { "inputs": [], "name": "InsufficientBalance", "type": "error" },
+  { "inputs": [], "name": "InsufficientContractBalance", "type": "error" },
+  { "inputs": [], "name": "ZeroAddress", "type": "error" },
+  { "inputs": [], "name": "ZeroAmount", "type": "error" },
   {
     "anonymous": false,
     "inputs": [
@@ -73,23 +82,36 @@
       {
         "indexed": true,
         "internalType": "address",
-        "name": "user",
+        "name": "from",
         "type": "address"
       },
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "requested",
+        "name": "amount",
         "type": "uint256"
+      }
+    ],
+    "name": "EtherReceived",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
       },
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "actualReceived",
+        "name": "amount",
         "type": "uint256"
       }
     ],
-    "name": "FeeDetected",
+    "name": "EtherSwept",
     "type": "event"
   },
   {
@@ -233,6 +255,13 @@
   },
   {
     "inputs": [],
+    "name": "getTotalPendingXAPWithdrawals",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "owner",
     "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
     "stateMutability": "view",
@@ -285,6 +314,23 @@
     "name": "sweep",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address payable", "name": "_to", "type": "address" },
+      { "internalType": "uint256", "name": "_amount", "type": "uint256" }
+    ],
+    "name": "sweepETH",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalPendingXAPWithdrawals",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
     "type": "function"
   },
   {

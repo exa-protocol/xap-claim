@@ -81,6 +81,7 @@ export default {
 
       // Network states
       chainId: null,
+
       isCorrectNetwork: false,
       isSwitchingNetwork: false,
 
@@ -101,15 +102,15 @@ export default {
         development: {
           // Sepolia testnet
           chainId: "0xaa36a7",
-          withdrawalContract: "0x3185141a79094C751b9f313D4e9B75e6ECa3D914",
+          withdrawalContract: "0xa765a5db753648AA0683Eec66D02736d522d624d",
           xapTokenContract: "0xE3FAD904f18CCb463a426d02c3dF73B72f158372",
           explorerUrl: "https://sepolia.etherscan.io",
         },
         production: {
           // Ethereum mainnet
           chainId: "0x1",
-          withdrawalContract: "0xYourMainnetContractAddress", // Replace with actual mainnet address
-          xapTokenContract: "0xYourMainnetTokenAddress", // Replace with actual mainnet token address
+          withdrawalContract: "0x3185141a79094C751b9f313D4e9B75e6ECa3D914", // Replace with actual mainnet address
+          xapTokenContract: "0x66aA0E04864F2dE0Ee44d9e508e68415C04E2F57", // Replace with actual mainnet token address
           explorerUrl: "https://etherscan.io",
         },
       },
@@ -125,10 +126,15 @@ export default {
   computed: {
     // Current environment based on hostname
     environment() {
-      return window.location.hostname === "localhost" ||
+      const environment =
+        window.location.hostname === "localhost" ||
         window.location.hostname === "127.0.0.1"
-        ? "development"
-        : "production";
+          ? "development"
+          : "production";
+
+      console.log("environment", environment);
+      console.log(this.contracts[environment]);
+      return environment;
     },
 
     // Get the current network configuration
